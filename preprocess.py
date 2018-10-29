@@ -12,7 +12,7 @@ def main():
     os.makedirs(MEGADIR, exist_ok=True)
 
     head_body_regex = re.compile(r"^(.*?\n\n)(.*)", flags=re.S)
-    key_val_regex = re.compile(r"^(.*): (.*)$", flags=re.MULTILINE)
+    key_val_regex = re.compile(r"^(.*?): (.*)$", flags=re.MULTILINE)
 
     root = sys.argv[1]
     for dirname, _, files in os.walk(root):
@@ -37,7 +37,6 @@ def main():
                     pickle.dump(data_dict, f)
             except Exception as e:
                 print(e)
-            exit()
 
 
 if __name__ == "__main__":
