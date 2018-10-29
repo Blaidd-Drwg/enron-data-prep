@@ -1,14 +1,17 @@
 #!/bin/bash
 
+maildir=$1
+
 # ó: 9b -> f3
 # í: ad -> ed
 # ç: d8 -> e7
 # á: ff -> e1
 function replaceByte() {
-    sed -i "s/\x9b/\xf3/g" "$1"
-    sed -i "s/\xad/\xed/g" "$1"
-    sed -i "s/\xd8/\xe7/g" "$1"
-    sed -i "s/\xff/\xe1/g" "$1"
+    local path="$maildir/$1"
+    sed -i "s/\x9b/\xf3/g" "$path"
+    sed -i "s/\xad/\xed/g" "$path"
+    sed -i "s/\xd8/\xe7/g" "$path"
+    sed -i "s/\xff/\xe1/g" "$path"
 }
 
 #9b
