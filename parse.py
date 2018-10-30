@@ -6,16 +6,19 @@ import pickle
 import re
 import sys
 
-MEGADIR = "megadir"
-
 
 def main():
-    os.makedirs(MEGADIR, exist_ok=True)
+    if len(sys.argv) != 3:
+        print('Usage: parse.py maildir megadir')
+        exit(1)
+
+    root = sys.argv[1]
+    megadir = sys.argv[2]
+    os.makedirs(megadir, exist_ok=True)
 
     head_body_regex = re.compile(r"^(.*?\r\n\r\n)(.*)", flags=re.S)
     key_val_regex = re.compile(r"^(.*?): (.*)$", flags=re.MULTILINE)
 
-    root = sys.argv[1]
     for dirname, _, files in os.walk(root):
         for filename in files:
             path = os.path.join(dirname, filename)
@@ -33,7 +36,7 @@ def main():
                     del data_dict['X-FileName']
                     del data_dict['X-Origin']
 
-                new_path = os.path.join(MEGADIR, path.replace('/', '-'))
+                new_path = os.path.join(megadir, path.replace('/', '-'))
                 with open(new_path, 'wb') as f:
                     pickle.dump(data_dict, f)
             except Exception as e:
