@@ -61,7 +61,7 @@ def main():
                 with open(new_path, 'wb') as f:
                     pickle.dump(data_dict, f)
             except Exception as e:
-                print(f'Error in {path}: {str(e)}')
+                print(f'{type(e).__name__} in {path}: {str(e)}')
 
 
 if __name__ == "__main__":
