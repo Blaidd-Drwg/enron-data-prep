@@ -7,6 +7,18 @@ import re
 import sys
 from tqdm import tqdm
 
+TO_SPLIT = ["To", "X-To", "Cc", "X-cc", "Bcc", "X-bcc"]
+TO_DELETE = ["Message-ID", "X-Folder", "X-FileName", "X-Origin"]
+
+def clean_dict(data_dict):
+    for delete_key in TO_DELETE:
+        del data_dict[delete_key]
+
+    for split_key in TO_SPLIT:
+        if split_key in data_dict:
+            data_dict[split_key] = data_dict[split_key].split(', ')
+            data_dict[split_key] = [name.strip() for name in data_dict[split_key]]
+    return data_dict
 
 def main():
     if len(sys.argv) != 3:
@@ -36,10 +48,8 @@ def main():
                     print(f"Error in {path}: couldn't parse metadata")
 
                 data_dict['Body'] = body_string
-                del data_dict['Message-ID']
-                del data_dict['X-Folder']
-                del data_dict['X-FileName']
-                del data_dict['X-Origin']
+
+                data_dict = clean_dict(data_dict)
 
                 new_path = os.path.join(megadir, path.replace('/', '-'))
                 with open(new_path, 'wb') as f:
