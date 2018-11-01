@@ -47,7 +47,7 @@ def main():
     name_map = {}
 
     head_body_regex = re.compile(r"^(.*?\r\n\r\n)(.*)", flags=re.S)
-    key_val_regex = re.compile(r"(.+?): (.*?)\r\n(?!\t)", flags=re.S)
+    key_val_regex = re.compile(r"(.+?): (.*?)\r\n(?![ \t])", flags=re.S)
 
     for dirname, _, files in tqdm(os.walk(root), total=3500):
         for filename in files:
