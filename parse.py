@@ -30,7 +30,7 @@ def main():
     os.makedirs(megadir, exist_ok=True)
 
     head_body_regex = re.compile(r"^(.*?\r\n\r\n)(.*)", flags=re.S)
-    key_val_regex = re.compile(r"(^|(?<=\r\n))(\S.*?): (.*)\r\n")
+    key_val_regex = re.compile(r"(.+?): (.*?)\r\n(?!\t)", flags=re.S)
 
     for dirname, _, files in tqdm(os.walk(root), total=3500):
         for filename in files:
@@ -43,7 +43,7 @@ def main():
                 head_string = head_body_match.group(1)
                 body_string = head_body_match.group(2).replace('\r', '')
 
-                data_dict = {k: v for _, k, v in key_val_regex.findall(head_string)}
+                data_dict = dict(key_val_regex.findall(head_string))
                 if not data_dict:
                     print(f"Error in {path}: couldn't parse metadata")
 
