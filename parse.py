@@ -5,6 +5,7 @@ import os
 import pickle
 import re
 import sys
+from tqdm import tqdm
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
     head_body_regex = re.compile(r"^(.*?\r\n\r\n)(.*)", flags=re.S)
     key_val_regex = re.compile(r"(^|(?<=\r\n))(\S.*?): (.*)\r\n")
 
-    for dirname, _, files in os.walk(root):
+    for dirname, _, files in tqdm(os.walk(root), total=3501):
         for filename in files:
             path = os.path.join(dirname, filename)
             try:
