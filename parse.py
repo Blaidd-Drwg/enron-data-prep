@@ -9,6 +9,9 @@ from tqdm import tqdm
 
 TO_SPLIT = ["To", "X-To", "Cc", "X-cc", "Bcc", "X-bcc"]
 TO_DELETE = ["Message-ID", "X-Folder", "X-FileName", "X-Origin"]
+X_KEYS = [("To", "X-To"), ("Cc", "X-cc"), ("Bcc", "X-bcc")]
+
+x_regex = re.compile(r'([^,\s].+?) <.+?>')
 
 def clean_dict(data_dict):
     for delete_key in TO_DELETE:
@@ -16,7 +19,10 @@ def clean_dict(data_dict):
 
     for split_key in TO_SPLIT:
         if split_key in data_dict:
-            data_dict[split_key] = data_dict[split_key].split(', ')
+            if '<' in data_dict[split_key]:
+                data_dict[split_key] = x_regex.findall(data_dict[split_key])
+            else:
+                data_dict[split_key] = data_dict[split_key].split(', ')
             data_dict[split_key] = [name.strip() for name in data_dict[split_key]]
     return data_dict
 
