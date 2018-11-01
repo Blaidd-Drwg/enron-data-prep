@@ -3,6 +3,7 @@ import re
 import os
 import codecs
 import glob
+import pickle
 
 subject_regex = re.compile(r"^>\sSubject:\s+(.*)$(.*)$",flags=re.MULTILINE)
 
@@ -24,6 +25,8 @@ for dirname, _, files in os.walk(root):
         try:
             with codecs.open(path, 'r',"cp1252") as f:
                 string = f.read()
+                dictionary_actual = pickle.load(f)
+
                 potential_mail_places = list()
 
                 subject_regex_match = subject_regex.search(string)
@@ -84,7 +87,16 @@ for dirname, _, files in os.walk(root):
                     reply_body = reply_body_regex_match.group(1)
 
                 for file in potential_mail_places:
-                    print(file)
+                    path = os.path.join(dirname, filename)
+                        with codecs.open(path, 'r',"cp1252") as compare:
+                            string = compare.read()
+                            dictionary_compare = pickle.load(compare)
+                            if reply_body==dictionary_compare["Body"]:
+                                print("MATCH in: " + file)
+                                dictionary_actual["repliedTo"] = file
+
+
+
 
         except Exception as e:
             print(e)
