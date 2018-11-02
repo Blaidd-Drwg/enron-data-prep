@@ -9,19 +9,8 @@ from tqdm import tqdm
 
 TO_SPLIT = ["To", "X-To", "Cc", "X-cc", "Bcc", "X-bcc"]
 TO_DELETE = ["Message-ID", "X-Folder", "X-FileName", "X-Origin"]
-X_KEYS = [("To", "X-To"), ("Cc", "X-cc"), ("Bcc", "X-bcc")]
 
 x_regex = re.compile(r'([^,\s].+?) <.+?>')
-
-def add_to_name_map(name_map, data_dict):
-    for key, x_key in X_KEYS:
-        if key in data_dict:
-            for address, name in zip(data_dict[key], data_dict[x_key]):
-                if address in name_map:
-                    name_map[address].add(name)
-                else:
-                    name_map[address] = {name}
-    return name_map
 
 def clean_dict(data_dict):
     for delete_key in TO_DELETE:
@@ -44,7 +33,6 @@ def main():
     root = sys.argv[1]
     megadir = sys.argv[2]
     os.makedirs(megadir, exist_ok=True)
-    name_map = {}
 
     head_body_regex = re.compile(r"^(.*?\r\n\r\n)(.*)", flags=re.S)
     key_val_regex = re.compile(r"(.+?): (.*?)\r\n(?![ \t])", flags=re.S)
@@ -67,7 +55,6 @@ def main():
                 data_dict['Body'] = body_string
 
                 data_dict = clean_dict(data_dict)
-                name_map = add_to_name_map(name_map, data_dict)
 
                 new_path = os.path.join(megadir, path.replace('/', '-'))
                 with open(new_path, 'wb') as f:
